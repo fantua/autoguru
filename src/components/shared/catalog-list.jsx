@@ -1,33 +1,31 @@
 import React from 'react';
 import Parse from 'parse';
 import CatalogItem from './catalog-item';
+import PaginatorMixin from '../../mixins/paginator';
 import { getRoute, isAdmin } from '../../utils';
 
 const CatalogList = React.createClass({
 
-    getInitialState() {
-        return {
-            data: []
-        };
-    },
+    mixins: [PaginatorMixin],
 
-    fetch(props) {
+    fetch(props = this.props) {
         const category = Number(props.params.category);
         const query = new Parse.Query(Parse.Object.extend('Object'));
         query.equalTo('type', category);
         if (!isAdmin()) {
             query.equalTo('user', Parse.User.current());
         }
-        query.find({
-            success: (results) => {
-                if (this.isMounted()) this.setState({data: results});
-            },
-            error: (error) => console.log(error)
+        query.count().then((count) => {
+            query.skip(this.state.offset);
+            query.limit(this.state.limit);
+            query.find().then((results) => {
+                if (this.isMounted()) this.setData(results, count);
+            });
         });
     },
 
     componentDidMount() {
-        this.fetch(this.props);
+        this.fetch();
     },
 
     componentWillReceiveProps(nextProps) {
@@ -60,6 +58,9 @@ const CatalogList = React.createClass({
 
         return (
             <div className="tab-content">
+                <div className="tab-top-bar">
+                    {this.getPaginator()}
+                </div>
                 <table className="table">
                     <thead>
                     <tr>

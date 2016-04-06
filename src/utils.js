@@ -20,3 +20,5 @@ export function requireAuth (nextState, replace) {
         });
     }
 }
+
+export const paginatorLimit = 10;

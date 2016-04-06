@@ -3,40 +3,22 @@ import { Link } from 'react-router';
 
 const Item = React.createClass({
 
-    getInitialState() {
-        return {
-            hidden: this.props.data.get('hidden')
-        };
-    },
-
-    onChange(e) {
-        e.preventDefault();
-
-        this.props.data.set('hidden', !this.state.hidden);
-        this.props.data.save(null, {
-            success: (item) => {
-                this.setState({hidden: !this.state.hidden});
-            },
-            error: (item, error) => {
-                console.log(error);
-            }
-        });
-    },
-
     render() {
 
+        const date = this.props.data.get('createdAt').toLocaleString();
         const name = this.props.data.get('name');
-        const address = this.props.data.get('address');
-        const date = this.props.data.get('expirationDate').toLocaleDateString();
+        const phone = this.props.data.get('phoneNumber');
+        const model = this.props.data.get('carModel');
+        const number = this.props.data.get('carNumber');
+
 
         return (
             <tr>
+                <td>{date} {popup()}</td>
                 <td>{name}</td>
-                <td>{address}</td>
-                <td>до {date}</td>
-                <td className="btn-holder">
-
-                </td>
+                <td>{phone}</td>
+                <td>{model}</td>
+                <td>{number}</td>
             </tr>
         );
 

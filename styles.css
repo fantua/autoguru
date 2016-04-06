@@ -1074,7 +1074,7 @@ th {
     display: block;
 }
 
-.main .tab-content .pagination li a.active {
+.main .tab-content .pagination li.active a {
     color: #fff;
     background: #3caeda;
     border-radius: 50%;

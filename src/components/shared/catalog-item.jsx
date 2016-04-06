@@ -47,6 +47,8 @@ const CatalogItem = React.createClass({
                 }
             },
             callback: () => {
+                const id = this.props.data.get('user').id;
+
                 extra.push(
                     <td key={extra.length} className="btn-holder">
                         <Link to={'/callback/view/' + id} className="button-default">Перейти</Link>
