@@ -22,3 +22,10 @@ export function requireAuth (nextState, replace) {
 }
 
 export const paginatorLimit = 10;
+
+export function dateForInput (date) {
+    const day = ("0" + date.getDate()).slice(-2);
+    const month = ("0" + (date.getMonth() + 1)).slice(-2);
+
+    return date.getFullYear() + '-' + (month) + '-' + (day);
+}

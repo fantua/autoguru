@@ -14,7 +14,7 @@ const Item = React.createClass({
 
         return (
             <tr>
-                <td>{date} {popup()}</td>
+                <td>{date}</td>
                 <td>{name}</td>
                 <td>{phone}</td>
                 <td>{model}</td>

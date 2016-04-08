@@ -11,20 +11,6 @@ const Item = React.createClass({
         };
     },
 
-    onChange(e) {
-        e.preventDefault();
-
-        this.props.data.set('hidden', !this.state.hidden);
-        this.props.data.save(null, {
-            success: (item) => {
-                this.setState({hidden: !this.state.hidden});
-            },
-            error: (item, error) => {
-                console.log(error);
-            }
-        });
-    },
-
     togglePopup(e) {
         this.setState({popup: !this.state.popup});
     },

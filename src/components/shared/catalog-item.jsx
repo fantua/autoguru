@@ -14,13 +14,10 @@ const CatalogItem = React.createClass({
         e.preventDefault();
 
         this.props.data.set('hidden', !this.state.hidden);
-        this.props.data.save(null, {
-            success: (item) => {
-                if (this.isMounted()) this.setState({hidden: !this.state.hidden});
-            },
-            error: (item, error) => {
-                console.log(error);
-            }
+        this.props.data.save(null).then((item) => {
+            if (this.isMounted()) this.setState({hidden: !this.state.hidden});
+        }, (error) => {
+            console.log(error);
         });
     },
 
@@ -34,12 +31,16 @@ const CatalogItem = React.createClass({
         const extra = [];
         const helper = {
             catalog: () => {
-                extra.push(<td key={extra.length} className="btn-holder"><a href="#" className="edit"></a></td>);
+                extra.push(
+                    <td key={extra.length} className="btn-holder">
+                        <Link to={'/catalog/edit/' + id} className="edit" />
+                    </td>
+                );
                 if (isAdmin()) {
                     extra.push(
                         <td key={extra.length} className="btn-holder">
                             <label className="label-switch">
-                                <input type="checkbox" checked={this.state.hidden} onChange={this.onChange} />
+                                <input type="checkbox" checked={!this.state.hidden} onChange={this.onChange} />
                                 <div className="checkbox"></div>
                             </label>
                         </td>

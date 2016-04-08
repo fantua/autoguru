@@ -8,16 +8,18 @@ const List = React.createClass({
     mixins: [PaginatorMixin],
 
     fetch(props = this.props) {
+        let count;
         const user = new Parse.User();
         user.id = String(props.params.id);
         const query = new Parse.Query(Parse.Object.extend('Callback'));
         query.equalTo('owner', user);
-        query.count().then((count) => {
+        query.count().then((result) => {
+            count = result;
             query.skip(this.state.offset);
             query.limit(this.state.limit);
-            query.find().then((results) => {
-                if (this.isMounted()) this.setData(results, count);
-            });
+            return query.find();
+        }).then((results) => {
+            if (this.isMounted()) this.setData(results, count);
         });
     },
 

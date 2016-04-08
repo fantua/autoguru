@@ -14,14 +14,11 @@ const Login = React.createClass({
             return;
         }
 
-        Parse.User.logIn(login, password, {
-            success: (user) => {
-                browserHistory.push('/catalog');
-            },
-            error: (user, error) => {
-                console.log(error);
-                alert(error.message);
-            }
+        Parse.User.logIn(login, password).then((user) => {
+            browserHistory.push('/catalog');
+        }, (error) => {
+            console.log(error);
+            alert(error.message);
         });
     },
 

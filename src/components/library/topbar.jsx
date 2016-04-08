@@ -15,6 +15,8 @@ const Topbar = React.createClass({
             logout: false,
             titles: {
                 '/catalog': 'Каталог услуг',
+                '/catalog/new': 'Добавить',
+                '/catalog/edit': 'Редактировать',
                 '/callback': 'Обратные звонки',
                 '/reviews': 'Отзывы'
             }

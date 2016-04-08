@@ -8,16 +8,18 @@ const List = React.createClass({
     mixins: [PaginatorMixin],
 
     fetch(props = this.props) {
+        let count;
         const id = String(props.params.id);
         const query = new Parse.Query(Parse.Object.extend('Review'));
         query.equalTo('reviewObjectId', id);
-        query.count().then((count) => {
+        query.count().then((result) => {
+            count = result;
             query.include('user');
             query.skip(this.state.offset);
             query.limit(this.state.limit);
-            query.find().then((results) => {
-                if (this.isMounted()) this.setData(results, count);
-            });
+            return query.find();
+        }).then((results) => {
+            if (this.isMounted()) this.setData(results, count);
         });
     },
 

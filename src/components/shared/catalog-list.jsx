@@ -3,24 +3,27 @@ import Parse from 'parse';
 import CatalogItem from './catalog-item';
 import PaginatorMixin from '../../mixins/paginator';
 import { getRoute, isAdmin } from '../../utils';
+import { Link } from 'react-router';
 
 const CatalogList = React.createClass({
 
     mixins: [PaginatorMixin],
 
     fetch(props = this.props) {
+        let count;
         const category = Number(props.params.category);
         const query = new Parse.Query(Parse.Object.extend('Object'));
         query.equalTo('type', category);
         if (!isAdmin()) {
             query.equalTo('user', Parse.User.current());
         }
-        query.count().then((count) => {
+        query.count().then((result) => {
+            count = result;
             query.skip(this.state.offset);
             query.limit(this.state.limit);
-            query.find().then((results) => {
-                if (this.isMounted()) this.setData(results, count);
-            });
+            return query.find();
+        }).then((results) => {
+            if (this.isMounted()) this.setData(results, count);
         });
     },
 
@@ -35,6 +38,7 @@ const CatalogList = React.createClass({
 
     render() {
         const route = getRoute(this.props.location.pathname);
+        const category = this.props.params.category;
 
         const list = this.state.data.map((item) => {
             return <CatalogItem key={item.id} data={item} route={route} />;
@@ -56,8 +60,17 @@ const CatalogList = React.createClass({
             }
         }[route]();
 
+        const newButton = () => {
+            if (route == 'catalog' && isAdmin()) return (
+                <div className="tab-title">
+                    <Link to={'/catalog/new/' + category} className="button-default add">Добавить пользователя</Link>
+                </div>
+            );
+        };
+
         return (
             <div className="tab-content">
+                {newButton()}
                 <div className="tab-top-bar">
                     {this.getPaginator()}
                 </div>
