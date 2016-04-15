@@ -58,18 +58,57 @@ const CatalogItem = {
         });
     },
 
+    deleteImage(index) {
+        this.setState({images: this.state.images.filter((_, i) => i !== index)});
+    },
+
     getImages() {
         const arr = [];
 
         this.state.images.forEach((image, i) => {
             arr.push(
                 <div key={i} className="img-holder">
+                    <span className="delete-img" onClick={this.deleteImage.bind(this, i)}>x</span>
                     <img src={image.url()} width="94px" height="85px" />
                 </div>
             );
         });
 
         return arr;
+    },
+
+    checkAvailability(val) {
+        return val == this.state.availability;
+    },
+
+    getAvailability() {
+        return (
+            <div className="form-row settings">
+                <div className="checkbox green">
+                    <input ref="radio" type="radio" id="Checkbox-101" name="Checkbox" className="form-input"
+                           defaultChecked={this.checkAvailability(0)}
+                           onChange={this.setAvailability.bind(this, 0)}
+                           required />
+                    <label htmlFor="Checkbox-101">Свободно</label>
+                </div>
+                <div className="checkbox yellow">
+                    <input ref="radio" type="radio" id="Checkbox-202" name="Checkbox" className="form-input"
+                           defaultChecked={this.checkAvailability(1)}
+                           onChange={this.setAvailability.bind(this, 1)} />
+                    <label htmlFor="Checkbox-202">Освобождается</label>
+                </div>
+                <div className="checkbox red">
+                    <input ref="radio" type="radio" id="Checkbox-303" name="Checkbox" className="form-input"
+                           defaultChecked={this.checkAvailability(2)}
+                           onChange={this.setAvailability.bind(this, 2)} />
+                    <label htmlFor="Checkbox-303">Занято</label>
+                </div>
+            </div>
+        );
+    },
+
+    setAvailability(val) {
+        this.setState({availability: Number(val)});
     }
 
 };

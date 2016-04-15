@@ -8,6 +8,14 @@ export function getRoute (pathname) {
     return pathname.substr(0, pathname.indexOf('/', 1));
 }
 
+export function isMainRoute (route) {
+    return [
+        '/catalog',
+        '/callback',
+        '/reviews'
+    ].indexOf(route) != -1;
+}
+
 export function isAdmin () {
     return Parse.User.current().get('role') == 2;
 }

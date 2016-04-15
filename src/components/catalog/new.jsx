@@ -41,8 +41,10 @@ const New = React.createClass({
                 longitude: Number(this.refs.longitude.value.trim())
             }));
             object.set('description', this.refs.description.value.trim());
+            object.set('schedule', this.refs.schedule.value.trim());
             object.set('expirationDate', new Date(this.refs.date.value));
             object.set('options', this.state.options);
+            object.set('availability', this.state.availability);
             object.set('visits', 0);
             object.set('callbacks', 0);
 
@@ -73,6 +75,7 @@ const New = React.createClass({
                         </div>
                     </div>
                     <div className="form-block">
+                        {this.getAvailability()}
                         <div className="form-row">
                             <div className="form-item name">
                                 <label htmlFor="input-1" className="form-title">Введите название</label>
@@ -109,8 +112,16 @@ const New = React.createClass({
                             {this.getOptionsList()}
                         </div>
                         <div className="form-row description-obj">
-                            <div className="form-title">Описание объекта</div>
-                            <textarea ref="description" className="input-description" required />
+                            <div className="wrapp">
+                                <div className="col-left">
+                                    <div className="form-title">Описание объекта</div>
+                                    <textarea ref="description" className="input-description" required />
+                                </div>
+                                <div className="form-item col-right">
+                                    <div className="form-title">График работы</div>
+                                    <input ref="schedule" type="text" id="input-25" className="form-input" required />
+                                </div>
+                            </div>
                             <div className="add-photo-block">
                                 <div className="form-title">Фотографии объекта</div>
                                 <input ref="images" type="file" className="button-default add" accept="image/*" multiple onChange={this.handleFileAdd} />

@@ -1,7 +1,8 @@
 import React from 'react';
 import Parse from 'parse';
 import { Link } from 'react-router';
-import { getRoute, isAdmin } from '../../utils';
+import { getRoute, isMainRoute, isAdmin } from '../../utils';
+import { browserHistory } from 'react-router';
 
 const Tabs = React.createClass({
 
@@ -26,7 +27,19 @@ const Tabs = React.createClass({
         query.equalTo('user', Parse.User.current());
         query.first().then((object) => {
             this.setState({category: object.get('type')});
+            this.redirect();
         });
+    },
+
+    componentDidUpdate() {
+        if (isAdmin()) return;
+        this.redirect();
+    },
+
+    redirect () {
+        if (this.state.category != null && isMainRoute(this.props.location.pathname)) {
+            browserHistory.push(this.props.location.pathname + '/' + this.state.category);
+        }
     },
 
     render() {

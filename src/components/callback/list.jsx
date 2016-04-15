@@ -15,6 +15,7 @@ const List = React.createClass({
         query.equalTo('owner', user);
         query.count().then((result) => {
             count = result;
+            query.descending('createdAt');
             query.skip(this.state.offset);
             query.limit(this.state.limit);
             return query.find();

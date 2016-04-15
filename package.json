@@ -4,7 +4,7 @@
   "scripts": {
     "start": "npm run _server & npm run _build-dev",
     "debug": "npm run _server & npm run _build-debug ",
-    "_server": "live-server --host=192.168.0.102 --port=3000 --ignore=src --no-browser --entry-file=index.html",
+    "_server": "live-server --host=127.0.0.1 --port=3000 --ignore=src --no-browser --entry-file=index.html",
     "build": "NODE_ENV=production browserify src/main.jsx --extension=jsx | uglifyjs --screw-ie8 -c=dead_code,evaluate,loops,unused > build/bundle.js",
     "_build-dev": "NODE_ENV=development watchify src/main.jsx --extension=jsx -o build/bundle.js -p [ livereactload --host localhost ] -dv",
     "_build-debug": "NODE_ENV=development watchify src/main.jsx --extension=jsx -o build/bundle.js -dv"

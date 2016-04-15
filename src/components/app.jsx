@@ -9,7 +9,7 @@ const App = React.createClass({
 
         return (
             <div className="content">
-                <Sidebar />
+                <Sidebar location={this.props.location} />
 
                 <article className="main">
                     <Topbar />

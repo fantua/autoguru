@@ -25,7 +25,8 @@ const Edit = React.createClass({
             this.setState({
                 object: object,
                 images: object.get('photos'),
-                options: object.get('options')
+                options: object.get('options'),
+                availability: object.get('availability')
             });
         });
     },
@@ -42,13 +43,15 @@ const Edit = React.createClass({
             return phone;
         })());
         object.set('address', this.refs.address.value.trim());
-        object.set('coordinates', new Parse.GeoPoint({
-            latitude: Number(this.refs.latitude.value.trim()),
-            longitude: Number(this.refs.longitude.value.trim())
-        }));
         object.set('description', this.refs.description.value.trim());
+        object.set('schedule', this.refs.schedule.value.trim());
         object.set('options', this.state.options);
+        object.set('availability', this.state.availability);
         if (isAdmin()) {
+            object.set('coordinates', new Parse.GeoPoint({
+                latitude: Number(this.refs.latitude.value.trim()),
+                longitude: Number(this.refs.longitude.value.trim())
+            }));
             object.set('expirationDate', new Date(this.refs.date.value));
             object.set('hidden', this.refs.hidden.checked);
         }
@@ -120,6 +123,7 @@ const Edit = React.createClass({
                         {infoBlock()}
                     </div>
                     <div className="form-block">
+                        {this.getAvailability()}
                         <div className="form-row">
                             <div className="form-item name">
                                 <label htmlFor="input-1" className="form-title">Введите название</label>
@@ -144,11 +148,11 @@ const Edit = React.createClass({
                             <div className="form-title">Координаты геолокации</div>
                             <div className="form-item location-1">
                                 <label htmlFor="input-3" className="form-title-sm">Широта:</label>
-                                <input ref="latitude" max="90" min="-90" type="number" step="0.000001" id="input-5" className="form-input" defaultValue={obj.get('coordinates').latitude} required />
+                                <input ref="latitude" max="90" min="-90" type="number" step="0.000001" id="input-5" className="form-input" defaultValue={obj.get('coordinates').latitude} required disabled={!isAdmin()} />
                             </div>
                             <div className="form-item location-2">
                                 <label htmlFor="input-3" className="form-title-sm">Долгота:</label>
-                                <input ref="longitude" max="180" min="-180" type="number" step="0.000001" id="input-6" className="form-input" defaultValue={obj.get('coordinates').longitude} required />
+                                <input ref="longitude" max="180" min="-180" type="number" step="0.000001" id="input-6" className="form-input" defaultValue={obj.get('coordinates').longitude} required disabled={!isAdmin()} />
                             </div>
                         </div>
                         <div className="form-row">
@@ -156,8 +160,16 @@ const Edit = React.createClass({
                             {this.getOptionsList()}
                         </div>
                         <div className="form-row description-obj">
-                            <div className="form-title">Описание объекта</div>
-                            <textarea ref="description" className="input-description" defaultValue={obj.get('description')} required />
+                            <div className="wrapp">
+                                <div className="col-left">
+                                    <div className="form-title">Описание объекта</div>
+                                    <textarea ref="description" defaultValue={obj.get('description')}  className="input-description" required />
+                                </div>
+                                <div className="form-item col-right">
+                                    <div className="form-title">График работы</div>
+                                    <input ref="schedule" defaultValue={obj.get('schedule')}  type="text" id="input-25" className="form-input" required />
+                                </div>
+                            </div>
                             <div className="add-photo-block">
                                 <div className="form-title">Фотографии объекта</div>
                                 <input ref="images" type="file" className="button-default add" accept="image/*" multiple onChange={this.handleFileAdd} />
@@ -165,6 +177,13 @@ const Edit = React.createClass({
                                 <div className="preview-block">
                                     {this.getImages()}
                                 </div>
+                            </div>
+                        </div>
+                        <div className="form-row">
+                            <div className="form-title">Логин и пароль объекта</div>
+                            <div className="form-item login">
+                                <label htmlFor="input-8" className="form-title-sm">Логин(почта):</label>
+                                <input ref="email" type="email" id="input-8" value={obj.get('user').get('email')} className="form-input" required disabled />
                             </div>
                         </div>
                         <div className="all-result">
