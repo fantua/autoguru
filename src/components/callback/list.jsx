@@ -1,67 +1,50 @@
-import React from 'react';
-import Parse from 'parse';
-import Item from './item';
-import PaginatorMixin from '../../mixins/paginator';
+import React, { Component, PropTypes } from 'react';
+import Item from '../../containers/callback/item';
 
-const List = React.createClass({
+class List extends Component {
 
-    mixins: [PaginatorMixin],
-
-    fetch(props = this.props) {
-        let count;
-        const user = new Parse.User();
-        user.id = String(props.params.id);
-        const query = new Parse.Query(Parse.Object.extend('Callback'));
-        query.equalTo('owner', user);
-        query.count().then((result) => {
-            count = result;
-            query.descending('createdAt');
-            query.skip(this.state.offset);
-            query.limit(this.state.limit);
-            return query.find();
-        }).then((results) => {
-            if (this.isMounted()) this.setData(results, count);
-        });
-    },
+    static propTypes = {
+        clearData: PropTypes.func.isRequired,
+        data: PropTypes.array.isRequired,
+        fetch: PropTypes.func.isRequired
+    };
 
     componentDidMount() {
-        this.fetch();
-    },
+        this.props.fetch();
+    }
 
+    componentWillUnmount() {
+        this.props.clearData();
+    }
+
+    // fetch on route change
     componentWillReceiveProps(nextProps) {
-        this.fetch(nextProps);
-    },
+        if (nextProps.routing != this.props.routing) {
+            nextProps.fetch();
+        }
+    }
 
     render() {
-        const list = this.state.data.map((item) => {
-            return <Item data={item} key={item.id} onDelete={this.fetch} />;
+        const { data } = this.props;
+
+        const items = data.map((item) => {
+            return <Item key={item.id} data={item} />;
         });
 
+        console.log('Callback List - render');
+
         return (
-            <div className="tab-content">
-                <div className="tab-top-bar">
-                    <div className="tab-title"></div>
-                    {this.getPaginator()}
+            <div className="b-section__tabcontent-wrap">
+                <div className="b-section__tabcontent-item active">
+                    <ul className="b-filter__list">
+                        {items}
+                    </ul>
                 </div>
-                <table className="table">
-                    <thead>
-                    <tr>
-                        <th>Дата и время отправки</th>
-                        <th>Имя отправителя</th>
-                        <th>Номер телефона</th>
-                        <th>Модель авто</th>
-                        <th>Номер авто</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        {list}
-                    </tbody>
-                </table>
             </div>
         );
 
     }
 
-});
+}
 
 export default List;

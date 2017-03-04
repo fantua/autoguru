@@ -1,105 +1,57 @@
-import React from 'react';
-import { Link } from 'react-router';
-import DeletePopup from './delete-popup';
-import AnswerPopup from './answer-popup';
-import { isAdmin } from './../../utils';
+import React, { Component, PropTypes } from 'react';
+import Checkbox from '../library/elements/checkbox';
 
-const Item = React.createClass({
+class Item extends Component {
 
-    getInitialState() {
-        return {
-            hidden: this.props.data.get('hidden'),
-            report: this.props.data.get('state'),
-            deletePopup: false,
-            answerPopup: false
-        };
-    },
+    constructor(props) {
+        super(props);
 
-    toggleDeletePopup(e) {
-        if (e) e.preventDefault();
+        this.handleSelect = this.handleSelect.bind(this);
+        this.handleHidden = this.handleHidden.bind(this);
+    }
 
-        this.setState({deletePopup: !this.state.deletePopup});
-    },
+    static propTypes = {
+        toggleObjectSelect: PropTypes.func.isRequired,
+        toggleObjectHidden: PropTypes.func.isRequired,
+        data: PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            model: PropTypes.object.isRequired,
+            selected: PropTypes.bool.isRequired
+        }).isRequired
+    };
 
-    toggleAnswerPopup(e) {
-        if (e) e.preventDefault();
+    handleSelect() {
+        const { data: { id }, toggleObjectSelect } = this.props;
+        toggleObjectSelect(id);
+    }
 
-        this.setState({answerPopup: !this.state.answerPopup});
-    },
-    
-    delete(e) {
+    handleHidden(e) {
         e.preventDefault();
-
-        const object = this.props.data.get('reviewObject');
-        object.increment('reviewSum', -(this.props.data.get('rating')));
-        object.increment('reviewCount', -1);
-        object.save(null).then(() => {
-            return this.props.data.destroy();
-        }).then(() => {
-            this.props.onDelete();
-        });
-    },
-    
-    answer(text) {
-        const object = this.props.data.clone();
-        object.set('isAnswer', true);
-        object.set('description', text);
-        object.save(null).then((object) => {
-            this.props.data.set('answerObject', object);
-
-            return this.props.data.save(null);
-        }).then(() => {
-            this.toggleAnswerPopup();
-        });
-    },
-
-    report(e) {
-        e.preventDefault();
-
-        this.props.data.set('state', 1);
-        this.props.data.save(null).then((result) => {
-            this.setState({report: true});
-        });
-    },
+        const { data: { id }, toggleObjectHidden } = this.props;
+        toggleObjectHidden(id);
+    }
 
     render() {
+        const { data: { id, selected, model } } = this.props;
 
-        const date = this.props.data.get('createdAt').toLocaleString();
-        const name = this.props.data.get('user').get('name');
-        const phone = this.props.data.get('user').get('phoneNumber');
-        const text = this.props.data.get('description');
-
-        const popup = () => {
-            if (this.state.deletePopup) return <DeletePopup onClose={this.toggleDeletePopup} onDelete={this.delete} />;
-            if (this.state.answerPopup) return <AnswerPopup onClose={this.toggleAnswerPopup} onAnswer={this.answer} />;
-        };
-
-        const getRemoveButton = () => {
-            if (isAdmin()) return <a href="#" className="button-danger" onClick={this.toggleDeletePopup}>удалить</a>;
-            if (!this.state.report) return  <a href="#" className="button-danger" onClick={this.report}>пожаловаться</a>;
-            return 'Запрос в модерации';
-        };
-
-        const getAnswerButton = () => {
-            if (this.props.data.get('answerObject')) {
-                return this.props.data.get('answerObject').get('description');
-            }
-            return <a href="#" className="button-info" onClick={this.toggleAnswerPopup}>ответить</a>;
-        };
+        console.log('Review Item [' + id + '] - render');
 
         return (
-            <tr>
-                <td>{date} {popup()}</td>
-                <td>{name}</td>
-                <td>{phone}</td>
-                <td>{text}</td>
-                <td className="btn-holder">{getRemoveButton()}</td>
-                <td className="btn-holder">{getAnswerButton()}</td>
-            </tr>
+            <li className="b-filter__item no-option">
+                <Checkbox onChange={this.handleSelect} checked={selected} />
+                <a href="#" className="b-filter__star" />
+                <span className="b-filter__date">{model.get('createdAt').toLocaleString()}</span>
+                <div className="b-filter__first-name">{model.get('user').get('name')}</div>
+                <div className="b-filter__phone">{model.get('user').get('phoneNumber')}</div>
+                <div className="b-filter__testimonial">
+                    <div className="ellipsis">{model.get('description')}</div>
+                    <div className="b-fiter__testimonial-hover">{model.get('description')}</div>
+                </div>
+            </li>
         );
 
     }
 
-});
+}
 
 export default Item;

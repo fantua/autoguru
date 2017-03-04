@@ -1,44 +1,58 @@
 import React from 'react';
 import { render } from 'react-dom';
-import Parse from 'parse';
-import { Router, Route, Redirect, browserHistory } from 'react-router';
+import { Router, Route, IndexRoute, IndexRedirect, browserHistory } from 'react-router';
+import { syncHistoryWithStore, routerReducer } from 'react-router-redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import thunkMiddleware from 'redux-thunk';
+import reducers from './reducers/index';
 import { requireAuth } from './utils';
-import App from './components/app';
+import App from './containers/app';
+import CatalogList from './containers/shared/catalog-list';
 import Login from './components/login';
+import Catalog from './components/catalog';
 import CatalogNew from './components/catalog/new';
 import CatalogEdit from './components/catalog/edit';
-import CatalogList from './components/shared/catalog-list';
-import CallbackList from './components/callback/list';
-import ReviewsList from './components/reviews/list';
+import CallbackList from './containers/callback/list';
+import ReviewsList from './containers/reviews/list';
+import ChangePassword from './components/change-password';
 
+const reducer = combineReducers({
+    app: reducers,
+    routing: routerReducer
+});
 
-Parse.initialize('w7DLv4hcHT9Hg8VJ23URtZsmnTzOwVIsTQPJXO4j', 'f6CT7PkXFsSmjRkpw41FlAp15nEZqs1j1SDpF8YZ');
+const store = createStore(
+    reducer,
+    applyMiddleware(thunkMiddleware)
+);
 
-render((
-    <Router history={browserHistory}>
-        <Route component={App} onEnter={requireAuth}>
-            <Route path="catalog">
-                <Route path="new">
-                    <Route path=":category" component={CatalogNew} />
+const history = syncHistoryWithStore(browserHistory, store);
+
+render(
+    <Provider store={store}>
+        <Router history={history}>
+            <Route path="/" component={App} onEnter={requireAuth}>
+                <Route path="catalog">
+                    <Route component={Catalog}>
+                        <IndexRoute />
+                        <Route path=":category" component={CatalogList} />
+                    </Route>
+                    <Route path="new/:category" component={CatalogNew} />
+                    <Route path="edit/:category" component={CatalogEdit} />
                 </Route>
-                <Route path="edit">
-                    <Route path=":id" component={CatalogEdit} />
+                <Route path="change-password" component={ChangePassword} />
+                <Route path="callback" component={Catalog}>
+                    <Route path=":category" component={CatalogList} />
+                    <Route path="view/:id" component={CallbackList} />
                 </Route>
-                <Route path=":category" component={CatalogList} />
+                <Route path="reviews" component={Catalog}>
+                    <Route path=":category" component={CatalogList} />
+                    <Route path="view/:id" component={ReviewsList} />
+                </Route>
+                <IndexRedirect to="catalog" />
             </Route>
-            <Route path="callback">
-                <Route path=":category" component={CatalogList} />
-                <Route path="view/:id" component={CallbackList} />
-            </Route>
-            <Route path="reviews">
-                <Route path=":category" component={CatalogList} />
-                <Route path="view/:id" component={ReviewsList} />
-            </Route>
-            <Redirect from="/" to="/catalog" />
-        </Route>
-        <Route path="login" component={Login}/>
-    </Router>
-), document.getElementById('app'));
-
-
-
+            <Route path="login" component={Login}/>
+        </Router>
+    </Provider>
+, document.getElementById('app'));

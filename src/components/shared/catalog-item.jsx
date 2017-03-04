@@ -1,81 +1,76 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
-import { isAdmin } from '../../utils';
+import Api from '../../api';
+import Checkbox from '../library/elements/checkbox';
+import Switch from '../library/elements/switch';
 
-const CatalogItem = React.createClass({
+class CatalogItem extends Component {
 
-    getInitialState() {
-        return {
-            hidden: this.props.data.get('hidden')
-        };
-    },
+    constructor(props) {
+        super(props);
 
-    onChange(e) {
+        this.handleSelect = this.handleSelect.bind(this);
+        this.handleHidden = this.handleHidden.bind(this);
+    }
+
+    static contextTypes = {
+        router: React.PropTypes.object.isRequired
+    };
+
+    static propTypes = {
+        toggleObjectSelect: PropTypes.func.isRequired,
+        toggleObjectHidden: PropTypes.func.isRequired,
+        data: PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            model: PropTypes.object.isRequired,
+            selected: PropTypes.bool.isRequired
+        }).isRequired
+    };
+
+    handleSelect() {
+        const { data: { id }, toggleObjectSelect } = this.props;
+        toggleObjectSelect(id);
+    }
+
+    handleHidden(e) {
         e.preventDefault();
-
-        this.props.data.set('hidden', !this.state.hidden);
-        this.props.data.save(null).then((item) => {
-            if (this.isMounted()) this.setState({hidden: !this.state.hidden});
-        }, (error) => {
-            console.log(error);
-        });
-    },
+        const { data: { id }, toggleObjectHidden } = this.props;
+        toggleObjectHidden(id);
+    }
 
     render() {
+        const { data: { id, selected, model } } = this.props;
+        const { router } = this.context;
 
-        const id = this.props.data.id;
-        const name = this.props.data.get('name');
-        const address = this.props.data.get('address');
-        const date = this.props.data.get('expirationDate').toLocaleDateString();
+        const rows = [];
 
-        const extra = [];
-        const helper = {
-            catalog: () => {
-                extra.push(
-                    <td key={extra.length} className="btn-holder">
-                        <Link to={'/catalog/edit/' + id} className="edit" />
-                    </td>
-                );
-                if (isAdmin()) {
-                    extra.push(
-                        <td key={extra.length} className="btn-holder">
-                            <label className="label-switch">
-                                <input type="checkbox" checked={!this.state.hidden} onChange={this.onChange} />
-                                <div className="checkbox"></div>
-                            </label>
-                        </td>
-                    );
-                }
-            },
-            callback: () => {
-                const id = this.props.data.get('user').id;
-
-                extra.push(
-                    <td key={extra.length} className="btn-holder">
-                        <Link to={'/callback/view/' + id} className="button-default">Перейти</Link>
-                    </td>
-                );
-            },
-            reviews: () => {
-                extra.push(
-                    <td key={extra.length} className="btn-holder">
-                        <Link to={'/reviews/view/' + id} className="button-default">Перейти</Link>
-                    </td>
-                );
+        if (router.isActive('catalog')) {
+            if (Api.user.isAdmin()) {
+                rows.push(<Switch key={rows.length} onChange={this.handleHidden} checked={model.get('hidden')}/>);
             }
-        }[this.props.route]();
+            rows.push(<Link key={rows.length} to={'/catalog/edit/' + id} className="b-filter__options"/>);
+        } else if (router.isActive('callback')) {
+            rows.push(<Link key={rows.length} to={'/callback/view/' + model.get('user').id} className="b-filter__eye" />);
+        } else if (router.isActive('reviews')) {
+            rows.push(<Link key={rows.length} to={'/reviews/view/' + id} className="b-filter__eye" />);
+        }
+
+        console.log('Catalog Item [' + id + '] - render');
 
         return (
-            <tr>
-                <td>{name}</td>
-                <td>{address}</td>
-                <td>до {date}</td>
-                {extra}
-            </tr>
+            <li className="b-filter__item">
+                <Checkbox onChange={this.handleSelect} checked={selected} />
+                <a href="#" className="b-filter__star" />
+                <span className="b-filter__date">{model.get('createdAt').toLocaleDateString()}</span>
+                <div className="b-filter__name">{model.get('name')}</div>
+                <div className="b-filter__address">{model.get('address')}</div>
+                <div className="b-filter__activity">до {model.get('expirationDate').toLocaleDateString()}</div>
+                {rows}
+            </li>
         );
 
     }
 
-});
+}
 
 export default CatalogItem;

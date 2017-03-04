@@ -1,27 +1,41 @@
-import React from 'react';
-import Sidebar from './library/sidebar';
-import Topbar from './library/topbar';
-import Tabs from './library/tabs';
+import React, { Component, PropTypes } from 'react';
+import { Link } from 'react-router';
+import Header from './library/blocks/header';
+import Sidebar from './library/blocks/sidebar';
 
-const App = React.createClass({
+const App = (props) => {
 
-    render() {
+    const addCatalogItemButton = () => {
+        if (props.showAddCatalogItemButton) {
+            return <Link to={`/catalog/new/${props.params.category}`} className="b-section__add" />;
+        }
+    };
 
-        return (
-            <div className="content">
-                <Sidebar location={this.props.location} />
+    console.log('App - render');
 
-                <article className="main">
-                    <Topbar />
-                    <Tabs location={this.props.location} />
-                    {this.props.children}
-                </article>
+    return (
+        <div className="b-section">
+            <Header category={props.params.category} />
+            {addCatalogItemButton()}
+            <main className="b-section__main">
+                <section className="b-filter">
+                    <div className="b-section__container">
+                        <div className="b-filter__wrap">
+                            <div className="b-filter__left">
+                                <Sidebar />
+                            </div>
+                            {props.children}
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    );
 
-            </div>
-        );
+};
 
-    }
-
-});
+App.propTypes = {
+    showAddCatalogItemButton: PropTypes.bool.isRequired
+};
 
 export default App;

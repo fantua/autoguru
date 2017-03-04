@@ -4,10 +4,10 @@
   "scripts": {
     "start": "npm run _server & npm run _build-dev",
     "debug": "npm run _server & npm run _build-debug ",
-    "_server": "live-server --host=127.0.0.1 --port=3000 --ignore=src --no-browser --entry-file=index.html",
-    "build": "NODE_ENV=production browserify src/main.jsx --extension=jsx | uglifyjs --screw-ie8 -c=dead_code,evaluate,loops,unused > build/bundle.js",
-    "_build-dev": "NODE_ENV=development watchify src/main.jsx --extension=jsx -o build/bundle.js -p [ livereactload --host localhost ] -dv",
-    "_build-debug": "NODE_ENV=development watchify src/main.jsx --extension=jsx -o build/bundle.js -dv"
+    "_server": "cd public && live-server --host=127.0.0.1 --port=3000 --no-browser --entry-file=index.html",
+    "build": "NODE_ENV=production browserify src/main.jsx --extension=jsx | uglifyjs --screw-ie8 -c=drop_console,dead_code,evaluate,loops,unused > public/build/bundle.js",
+    "_build-dev": "NODE_ENV=development watchify src/main.jsx --extension=jsx -o public/build/bundle.js -p [ livereactload --host localhost ] -dv",
+    "_build-debug": "NODE_ENV=development watchify src/main.jsx --extension=jsx -o public/build/bundle.js -dv"
   },
   "browserify": {
     "transform": [
@@ -17,6 +17,9 @@
           "presets": [
             "es2015",
             "react"
+          ],
+          "plugins": [
+            "transform-class-properties"
           ]
         }
       ],
@@ -24,20 +27,29 @@
     ]
   },
   "dependencies": {
-    "babel-preset-es2015": "^6.6.0",
-    "babel-preset-react": "^6.5.0",
-    "babelify": "^7.2.0",
-    "browserify": "^12.0.2",
-    "classnames": "^2.2.3",
-    "envify": "^3.4.0",
-    "jquery": "^2.2.2",
-    "parse": "^1.8.1",
-    "react": "^0.14.8",
-    "react-addons-create-fragment": "^0.14.8",
-    "react-dom": "^0.14.8",
-    "react-paginate": "^1.0.1",
-    "react-router": "^2.0.1",
-    "uglify-js": "^2.6.2"
+    "babel-plugin-transform-class-properties": "^6.18.0",
+    "babel-preset-es2015": "^6.16.0",
+    "babel-preset-react": "^6.16.0",
+    "babelify": "^7.3.0",
+    "browserify": "^13.1.0",
+    "classnames": "^2.2.5",
+    "component-emitter": "github:component/emitter",
+    "envify": "^3.4.1",
+    "install": "^0.8.1",
+    "jquery": "^3.1.1",
+    "livereactload": "^2.2.4",
+    "node-static": "^0.7.9",
+    "parse": "^1.9.2",
+    "react": "^15.3.2",
+    "react-addons-create-fragment": "^15.3.2",
+    "react-dom": "^15.3.2",
+    "react-paginate": "^2.2.3",
+    "react-redux": "^4.4.5",
+    "react-router": "^2.8.1",
+    "react-router-redux": "^4.0.6",
+    "redux": "^3.6.0",
+    "redux-thunk": "^2.1.0",
+    "uglify-js": "^2.7.3"
   },
   "devDependencies": {
     "babel-plugin-react-transform": "^2.0.2",
