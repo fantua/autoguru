@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import Tabs from '../blocks/tabs';
 import TopBar from '../blocks/top-bar';
-import Item from '../../containers/catalog/item';
+import Item from '../../containers/callbacks/item';
 import { getOffset } from '../../utils/pagination';
 
 const LIMIT = 20;
@@ -9,16 +9,11 @@ const LIMIT = 20;
 class List extends Component {
 
     static propTypes = {
-        categoryId: PropTypes.number.isRequired,
+        userId: PropTypes.string.isRequired,
         page: PropTypes.number.isRequired,
         count: PropTypes.number.isRequired,
-        objects: PropTypes.arrayOf(PropTypes.string).isRequired,
-        fetch: PropTypes.func.isRequired,
-        selectedAll: PropTypes.bool.isRequired,
-        selectAll: PropTypes.func.isRequired,
-        selectNone: PropTypes.func.isRequired,
-        activateAllSelected: PropTypes.func.isRequired,
-        deactivateAllSelected: PropTypes.func.isRequired
+        callbacks: PropTypes.arrayOf(PropTypes.string).isRequired,
+        fetch: PropTypes.func.isRequired
     };
 
     componentDidMount() {
@@ -33,40 +28,28 @@ class List extends Component {
     }
 
     fetch(props = this.props) {
-        const { categoryId, page, fetch, location: { query: { q } } } = props;
+        const { userId, page, fetch } = props;
         const offset = getOffset(page, LIMIT);
 
-        fetch(categoryId, offset, LIMIT, q);
+        fetch(userId, offset, LIMIT);
     }
 
     renderTopBar() {
-        const { page, count, selectAll, selectNone, selectedAll, activateAllSelected, deactivateAllSelected } = this.props;
+        const { page, count } = this.props;
 
         const props = {
-            selectionProps: {
-                onSelectAll: selectAll,
-                onSelectNone: selectNone,
-                selectedAll
-            },
-            actionsProps: {
-                items: [
-                    { name: 'Активировать все помеченные', onClick: activateAllSelected },
-                    { name: 'Деактивировать все помеченные', onClick: deactivateAllSelected }
-                ]
-            },
             paginationProps: {
                 limit: LIMIT,
                 page,
                 count
-            },
-            onDelete: () => {}
+            }
         };
 
         return <TopBar {...props}  />;
     }
 
     renderItems() {
-        return this.props.objects.map(id => <Item key={id} id={id} />);
+        return this.props.callbacks.map(id => <Item key={id} id={id} />);
     }
 
     render() {

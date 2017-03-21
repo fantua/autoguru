@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import Checkbox from '../library/checkbox';
 import Switch from '../library/switch';
 
-class CatalogItem extends Component {
+class Item extends Component {
 
     constructor(props) {
         super(props);
@@ -18,6 +18,7 @@ class CatalogItem extends Component {
 
     static propTypes = {
         id: PropTypes.string.isRequired,
+        userId: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
         address: PropTypes.string.isRequired,
         hidden: PropTypes.bool.isRequired,
@@ -51,7 +52,8 @@ class CatalogItem extends Component {
     }
 
     render() {
-        const { id, name, address, hidden, expirationDate, createdAt, selected } = this.props;
+        const { category } = this.context.router.params;
+        const { id, userId, name, address, hidden, expirationDate, createdAt, selected } = this.props;
 
         return (
             <li className="b-filter__item">
@@ -62,7 +64,7 @@ class CatalogItem extends Component {
                 <div className="b-filter__address">{address}</div>
                 <div className="b-filter__activity">до {expirationDate.toLocaleDateString()}</div>
                 <Switch onChange={this.handleHidden} checked={hidden}/>
-                <Link to={`/catalog/edit/${id}`} className="b-filter__callbacks"/>
+                <Link to={`/catalog/${category}/callbacks/${userId}`} className="b-filter__callbacks"/>
                 <Link to={`/catalog/edit/${id}`} className="b-filter__reviews"/>
                 <Link to={`/catalog/edit/${id}`} className="b-filter__options"/>
             </li>
@@ -72,4 +74,4 @@ class CatalogItem extends Component {
 
 }
 
-export default CatalogItem;
+export default Item;

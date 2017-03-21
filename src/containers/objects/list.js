@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { fetch, selectAll, selectNone, activateAllSelected, deactivateAllSelected } from '../../actions/objects';
-import List from '../../components/catalog/list';
+import List from '../../components/objects/list';
 
 const mapStateToProps = (state, { location, params: { category } }) => {
     const { count, ids, selected } = state.objects;

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { select, unselect, activate, deactivate } from '../../actions/objects';
-import Item from '../../components/catalog/item';
+import Item from '../../components/objects/item';
 
 const mapStateToProps = (state, { id }) => {
     const { entities, selected } = state.objects;
@@ -9,6 +9,7 @@ const mapStateToProps = (state, { id }) => {
 
     return {
         selected: selected.includes(id),
+        userId: model.get('user').id,
         name: model.get('name'),
         address: model.get('address'),
         hidden: model.get('hidden'),

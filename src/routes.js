@@ -4,7 +4,8 @@ import { requireAuth } from './utils/user';
 import App from './components/app';
 import Login from './containers/login';
 import ChangePassword from './containers/change-password';
-import CatalogList from './containers/catalog/list';
+import ObjectsList from './containers/objects/list';
+import CallbacksList from './containers/callbacks/list';
 
 export default (
     <Route>
@@ -12,7 +13,8 @@ export default (
             <Route path="change-password" component={ChangePassword} />
 
             <Route path="catalog(/:category)">
-                <IndexRoute component={CatalogList} />
+                <IndexRoute component={ObjectsList} />
+                <Route path="callbacks/:id" component={CallbacksList} />
 
                 {/*<Route component={Catalog}>*/}
 
