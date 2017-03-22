@@ -1,6 +1,13 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { fetch, selectAll, selectNone, activateAllSelected, deactivateAllSelected } from '../../actions/objects';
+import {
+    fetch,
+    selectAll,
+    selectNone,
+    activateAllSelected,
+    deactivateAllSelected,
+    deleteAllSelected
+} from '../../actions/objects';
 import List from '../../components/objects/list';
 
 const mapStateToProps = (state, { location, params: { category } }) => {
@@ -16,7 +23,14 @@ const mapStateToProps = (state, { location, params: { category } }) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetch, selectAll, selectNone, activateAllSelected, deactivateAllSelected }, dispatch);
+    return bindActionCreators({
+        fetch,
+        selectAll,
+        selectNone,
+        activateAllSelected,
+        deactivateAllSelected,
+        deleteAllSelected
+    }, dispatch);
 };
 
 export default connect(

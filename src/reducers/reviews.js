@@ -1,7 +1,7 @@
 import * as actions from '../constants';
 
 const initialState = {
-    entities: {},   // key (id): value (objects)
+    entities: {},   // key (id): value (reviews)
     selected: [],
     ids: [],
     count: 0,
@@ -11,7 +11,7 @@ const initialState = {
 export default function (state = initialState, action) {
     switch (action.type) {
 
-        case actions.OBJECTS_RECEIVE: {
+        case actions.REVIEWS_RECEIVE: {
             const { entities: objects, result } = action.payload;
             const entities = {};
 
@@ -29,7 +29,7 @@ export default function (state = initialState, action) {
             };
         }
 
-        case actions.OBJECTS_REQUEST: {
+        case actions.REVIEWS_REQUEST: {
             return {
                 ...state,
                 ids: initialState.ids,
@@ -37,21 +37,21 @@ export default function (state = initialState, action) {
             };
         }
 
-        case actions.OBJECTS_SELECT_ALL: {
+        case actions.REVIEWS_SELECT_ALL: {
             return {
                 ...state,
                 selected: [...state.ids]
             };
         }
 
-        case actions.OBJECTS_SELECT_NONE: {
+        case actions.REVIEWS_SELECT_NONE: {
             return {
                 ...state,
                 selected: initialState.selected
             };
         }
 
-        case actions.OBJECTS_SELECT: {
+        case actions.REVIEWS_SELECT: {
             const { id } = action.payload;
 
             return {
@@ -60,7 +60,7 @@ export default function (state = initialState, action) {
             };
         }
 
-        case actions.OBJECTS_UNSELECT: {
+        case actions.REVIEWS_UNSELECT: {
             const { id } = action.payload;
 
             return {
@@ -69,7 +69,7 @@ export default function (state = initialState, action) {
             };
         }
 
-        case actions.OBJECTS_DELETE: {
+        case actions.REVIEWS_DELETE: {
             const { list } = action.payload;
             const entities = {};
 

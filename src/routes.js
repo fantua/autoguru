@@ -6,6 +6,7 @@ import Login from './containers/login';
 import ChangePassword from './containers/change-password';
 import ObjectsList from './containers/objects/list';
 import CallbacksList from './containers/callbacks/list';
+import ReviewsList from './containers/reviews/list';
 
 export default (
     <Route>
@@ -15,6 +16,7 @@ export default (
             <Route path="catalog(/:category)">
                 <IndexRoute component={ObjectsList} />
                 <Route path="callbacks/:id" component={CallbacksList} />
+                <Route path="reviews/:id" component={ReviewsList} />
 
                 {/*<Route component={Catalog}>*/}
 

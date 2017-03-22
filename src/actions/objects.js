@@ -1,8 +1,10 @@
 import Parse from 'parse';
+import { push } from 'react-router-redux';
 import * as actions from '../constants';
 
 export const receive = (entities, result = {}) => ({type: actions.OBJECTS_RECEIVE, payload: { entities, result }});
 export const request = () => ({type: actions.OBJECTS_REQUEST, payload: {}});
+export const deleted = (list) => ({type: actions.OBJECTS_DELETE, payload: { list }});
 
 export const fetch = (categoryId, offset, limit, search = null) => function (dispatch) {
     dispatch(request());
@@ -68,4 +70,24 @@ export const activate = (id) => function (dispatch) {
 };
 export const deactivate = (id) => function (dispatch) {
     dispatch(setHiddenById(id, true));
+};
+
+export const deleteAllSelectedSuccess = () => function (dispatch, getState) {
+    const { pathname, query } = getState().routing.locationBeforeTransitions;
+
+    dispatch(push({ pathname, query: { ...query, page: undefined } }));
+};
+export const deleteAllSelected = () => function (dispatch, getState) {
+    const { selected, entities } = getState().objects;
+
+    if (selected.length) {
+        const list = selected.map(id => entities[id]);
+
+        Parse.Object.destroyAll(list)
+            .then(result => {
+                dispatch(deleted(result.map(item => item.id)));
+                dispatch(deleteAllSelectedSuccess());
+            })
+            .catch(e => { console.log(e); alert(e.message); });
+    }
 };

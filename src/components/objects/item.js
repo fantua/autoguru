@@ -65,7 +65,7 @@ class Item extends Component {
                 <div className="b-filter__activity">до {expirationDate.toLocaleDateString()}</div>
                 <Switch onChange={this.handleHidden} checked={hidden}/>
                 <Link to={`/catalog/${category}/callbacks/${userId}`} className="b-filter__callbacks"/>
-                <Link to={`/catalog/edit/${id}`} className="b-filter__reviews"/>
+                <Link to={`/catalog/${category}/reviews/${id}`} className="b-filter__reviews"/>
                 <Link to={`/catalog/edit/${id}`} className="b-filter__options"/>
             </li>
         );
