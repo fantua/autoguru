@@ -1,6 +1,7 @@
 import Parse from 'parse';
 import { push } from 'react-router-redux';
 import * as actions from '../constants';
+import User from '../utils/user';
 
 export const receive = (entities, result = {}) => ({type: actions.OBJECTS_RECEIVE, payload: { entities, result }});
 export const request = () => ({type: actions.OBJECTS_REQUEST, payload: {}});
@@ -13,10 +14,14 @@ export const fetch = (categoryId, offset, limit, search = null) => function (dis
     const query = new Parse.Query(object);
 
     query.equalTo('type', categoryId);
+    if (!User.isAdmin()) {
+        query.equalTo('user', User.get());
+    }
 
     if (search) {
         query.matches('canonicalName', `.*${search.toLowerCase()}*.`);
     }
+    query.include('user');
 
     query.descending('createdAt');
     query.skip(offset);
@@ -28,10 +33,52 @@ export const fetch = (categoryId, offset, limit, search = null) => function (dis
     ])
         .then(([count, entities]) => { dispatch(receive(entities, { count })); })
         .catch(e => { console.log(e); alert(e.message); });
+};
 
-    // if (!this.user.isAdmin()) {
-    //     query.equalTo('user', this.user.get());
-    // }
+export const fetchById = (id) => function (dispatch) {
+    const object = Parse.Object.extend('Object');
+    const query = new Parse.Query(object);
+
+    query.equalTo('objectId', id);
+    query.include('user');
+
+    query.first()
+        .then(entity => { dispatch(receive([ entity ])); })
+        .catch(e => { console.log(e); alert(e.message); });
+};
+
+export const createSuccess = (category) => function (dispatch) {
+    dispatch(push(`/catalog/${category}`));
+};
+export const create = ({ user, object }, category) => function (dispatch) {
+    const parseUser = new Parse.User();
+
+    parseUser.save(user)
+        .then(user => {
+            const parseObject = Parse.Object.extend('Object');
+            const _object = new parseObject();
+
+            return _object.save({ ...object, user });
+        })
+        .then(entity => {
+            dispatch(receive([ entity ]));
+            dispatch(createSuccess(category));
+        })
+        .catch(e => { console.log(e); alert(e.message); });
+};
+
+export const editSuccess = (category) => function (dispatch) {
+    dispatch(push(`/catalog/${category}`));
+};
+export const edit = (id, { user, object }, category) => function (dispatch, getState) {
+    const objectEntity = getState().objects.entities[id];
+
+    objectEntity.save(object)
+        .then(entity => {
+            dispatch(receive([ entity ]));
+            dispatch(editSuccess(category));
+        })
+        .catch(e => { console.log(e); alert(e.message); });
 };
 
 export const selectAll = () => ({type: actions.OBJECTS_SELECT_ALL, payload: {}});
@@ -75,7 +122,7 @@ export const deactivate = (id) => function (dispatch) {
 export const deleteAllSelectedSuccess = () => function (dispatch, getState) {
     const { pathname, query } = getState().routing.locationBeforeTransitions;
 
-    dispatch(push({ pathname, query: { ...query, page: undefined } }));
+    dispatch(push({ pathname, query }));
 };
 export const deleteAllSelected = () => function (dispatch, getState) {
     const { selected, entities } = getState().objects;

@@ -38,7 +38,7 @@ export const unselect = (id) => ({type: actions.REVIEWS_UNSELECT, payload: { id 
 export const deleteAllSelectedSuccess = () => function (dispatch, getState) {
     const { pathname, query } = getState().routing.locationBeforeTransitions;
 
-    dispatch(push({ pathname, query: { ...query, page: undefined } }));
+    dispatch(push({ pathname, query }));
 };
 export const deleteAllSelected = () => function (dispatch, getState) {
     const { selected, entities } = getState().reviews;

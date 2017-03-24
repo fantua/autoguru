@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { fetch } from '../../actions/callbacks';
-import List from '../../components/callbacks/list';
+import List from '../../components/callbacks';
 
 const mapStateToProps = (state, { location, params: { id } }) => {
     const { count, ids } = state.callbacks;

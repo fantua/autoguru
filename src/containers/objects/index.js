@@ -8,7 +8,7 @@ import {
     deactivateAllSelected,
     deleteAllSelected
 } from '../../actions/objects';
-import List from '../../components/objects/list';
+import List from '../../components/objects';
 
 const mapStateToProps = (state, { location, params: { category } }) => {
     const { count, ids, selected } = state.objects;

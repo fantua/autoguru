@@ -1,7 +1,9 @@
 import React, { Component, PropTypes } from 'react';
+import { Link } from 'react-router';
 import Tabs from '../blocks/tabs';
 import TopBar from '../blocks/top-bar';
 import Item from '../../containers/objects/item';
+import User from '../../utils/user';
 import { getOffset } from '../../utils/pagination';
 
 const LIMIT = 20;
@@ -79,6 +81,16 @@ class List extends Component {
         return this.props.objects.map(id => <Item key={id} id={id} />);
     }
 
+    renderCreateButton() {
+        const { category } = this.props.params;
+
+        if (User.isAdmin()) {
+            return <Link to={`/catalog/${category}/create`} className="b-section__add" />;
+        }
+
+        return null;
+    }
+
     render() {
 
         return (
@@ -96,6 +108,7 @@ class List extends Component {
                         </div>
                     </div>
                 </div>
+                {this.renderCreateButton()}
             </div>
         );
 

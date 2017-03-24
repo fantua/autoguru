@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { fetch, selectAll, selectNone, deleteAllSelected } from '../../actions/reviews';
-import List from '../../components/reviews/list';
+import List from '../../components/reviews';
 
 const mapStateToProps = (state, { location, params: { id } }) => {
     const { count, ids, selected } = state.reviews;

@@ -66,7 +66,7 @@ class Item extends Component {
                 <Switch onChange={this.handleHidden} checked={hidden}/>
                 <Link to={`/catalog/${category}/callbacks/${userId}`} className="b-filter__callbacks"/>
                 <Link to={`/catalog/${category}/reviews/${id}`} className="b-filter__reviews"/>
-                <Link to={`/catalog/edit/${id}`} className="b-filter__options"/>
+                <Link to={`/catalog/${category}/edit/${id}`} className="b-filter__options"/>
             </li>
         );
 

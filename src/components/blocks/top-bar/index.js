@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import Selection from './selection';
 import Pagination from './pagination';
 import Actions from './actions';
+import User from '../../../utils/user';
 
 class TopBar extends Component {
 
@@ -25,7 +26,7 @@ class TopBar extends Component {
     renderDelete() {
         const { onDelete } = this.props;
 
-        if (onDelete) {
+        if (User.isAdmin() && onDelete) {
             return <a className="b-filter__option-delete" onClick={onDelete}>Delete</a>
         }
 
@@ -35,7 +36,7 @@ class TopBar extends Component {
     renderActions() {
         const { actionsProps } = this.props;
 
-        if (actionsProps) {
+        if (User.isAdmin() && actionsProps) {
             return <Actions {...actionsProps} />;
         }
 

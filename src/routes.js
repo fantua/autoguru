@@ -4,9 +4,11 @@ import { requireAuth } from './utils/user';
 import App from './components/app';
 import Login from './containers/login';
 import ChangePassword from './containers/change-password';
-import ObjectsList from './containers/objects/list';
-import CallbacksList from './containers/callbacks/list';
-import ReviewsList from './containers/reviews/list';
+import ObjectsList from './containers/objects';
+import ObjectsCreate from './containers/objects/create';
+import ObjectsEdit from './containers/objects/edit';
+import CallbacksList from './containers/callbacks';
+import ReviewsList from './containers/reviews';
 
 export default (
     <Route>
@@ -15,6 +17,8 @@ export default (
 
             <Route path="catalog(/:category)">
                 <IndexRoute component={ObjectsList} />
+                <Route path="create" component={ObjectsCreate} />
+                <Route path="edit/:id" component={ObjectsEdit} />
                 <Route path="callbacks/:id" component={CallbacksList} />
                 <Route path="reviews/:id" component={ReviewsList} />
 
