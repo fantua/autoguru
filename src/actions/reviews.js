@@ -44,9 +44,17 @@ export const deleteAllSelected = () => function (dispatch, getState) {
     const { selected, entities } = getState().reviews;
 
     if (selected.length) {
-        const list = selected.map(id => entities[id]);
+        const list = selected.map(id => {
+            const item = entities[id];
 
-        Parse.Object.destroyAll(list)
+            item.get('reviewObject').increment('reviewSum', -(item.get('rating')));
+            item.get('reviewObject').increment('reviewCount', -1);
+
+            return item;
+        });
+
+        Parse.Object.saveAll(list)
+            .then(result => Parse.Object.destroyAll(list))
             .then(result => {
                 dispatch(deleted(result.map(item => item.id)));
                 dispatch(deleteAllSelectedSuccess());

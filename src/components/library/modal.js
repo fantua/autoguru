@@ -30,7 +30,7 @@ class Modal extends Component {
 
         if (isOpen) {
             if (!this.modal.contains(e.target)) {
-                onClose(e);
+                setTimeout(() => { onClose(e); }, 0);
             } else {
                 const tag = e.target.tagName.toLowerCase();
                 if (tag === 'a') {
