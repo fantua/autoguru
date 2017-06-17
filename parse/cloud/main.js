@@ -1,4 +1,5 @@
 require('./front-end/search.js');
+require('./front-end/object-delete.js');
 
 Parse.Cloud.define('updateUser', function(request, response) {
     if (!request.user) {

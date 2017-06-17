@@ -85,7 +85,8 @@ class Form extends Component {
             name: email.trim(),
             username: email.trim(),
             email: email.trim(),
-            password: password || null
+            password: password || null,
+            role: 1
         };
 
         const object = {
